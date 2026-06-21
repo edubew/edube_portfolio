@@ -15,6 +15,7 @@
   gap: 18px;
   margin: 28px 0 36px;
 }
+
 .about__bio p {
   font-size: 1.02rem;
   color: var(--text-body);
@@ -37,6 +38,7 @@
   gap: 10px;
   margin-bottom: 24px;
 }
+
 .about__skill-group:last-child {
   margin-bottom: 0;
 }
