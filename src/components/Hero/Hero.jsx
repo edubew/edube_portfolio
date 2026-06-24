@@ -2,134 +2,119 @@ import React, { useState, useEffect, useRef } from "react";
 import "./Hero.css";
 
 const CODE_LINES = [
-  { text: "def process_mpesa_callback(payload)", color: "#96584E" },
-  { text: "  order = Order.find_by(", color: "#B8956A" },
-  { text: "    checkout_id: payload[:id]", color: "#D4B896" },
-  { text: "  )", color: "#B8956A" },
-  { text: "  order.update!(status: :paid)", color: "#8C7048" },
-  { text: "  OrderMailer", color: "#B8956A" },
-  { text: "    .receipt(order)", color: "#D4B896" },
-  { text: "    .deliver_later", color: "#8C7048" },
-  { text: "end", color: "#96584E" },
+  { text: "class MpesaPaymentService", color: "#7A8F7B" },
+  { text: "  def initialize(order)", color: "#C9D2C4" },
+  { text: "    @order = order", color: "#9AAFAA" },
+  { text: "  end", color: "#C9D2C4" },
   { text: "", color: "" },
-  { text: "const useCart = () => {", color: "#8C7048" },
-  { text: "  const [items, setItems]", color: "#B8956A" },
-  { text: "    = useState([])", color: "#D4B896" },
-  { text: "  const addItem = (product) => {", color: "#B8956A" },
-  { text: "    setItems(p => [...p, product])", color: "#D4B896" },
-  { text: "  }", color: "#B8956A" },
-  { text: "  return { items, addItem }", color: "#8C7048" },
-  { text: "}", color: "#8C7048" },
+  { text: "  def call", color: "#7A8F7B" },
+  { text: "    response = daraja.stk_push(", color: "#C9D2C4" },
+  { text: "      phone:  @order.phone,", color: "#9AAFAA" },
+  { text: "      amount: @order.total,", color: "#9AAFAA" },
+  { text: "      ref:    @order.reference", color: "#9AAFAA" },
+  { text: "    )", color: "#C9D2C4" },
+  { text: "    track_callback(response)", color: "#7A8F7B" },
+  { text: "  end", color: "#C9D2C4" },
+  { text: "end", color: "#7A8F7B" },
+  { text: "", color: "" },
+  { text: "const useInventory = (sku) => {", color: "#7A8F7B" },
+  { text: "  const [stock, setStock]", color: "#C9D2C4" },
+  { text: "    = useState(null)", color: "#9AAFAA" },
+  { text: "  useEffect(() => {", color: "#C9D2C4" },
+  { text: "    fetchStock(sku).then(setStock)", color: "#9AAFAA" },
+  { text: "  }, [sku])", color: "#C9D2C4" },
+  { text: "  return stock", color: "#7A8F7B" },
+  { text: "}", color: "#7A8F7B" },
 ];
 
 function Typewriter() {
-  const [visibleLines, setVisibleLines] = useState([
-    { text: "", color: CODE_LINES[0].color },
+  const [lines, setLines] = useState([
+    { chars: "", color: CODE_LINES[0].color },
   ]);
   const [lineIdx, setLineIdx] = useState(0);
   const [charIdx, setCharIdx] = useState(0);
-  const [showCursor, setShowCursor] = useState(true);
+  const [cursor, setCursor] = useState(true);
   const [paused, setPaused] = useState(false);
-  const containerRef = useRef(null);
+  const bodyRef = useRef(null);
 
-  /* Cursor blink */
   useEffect(() => {
-    const id = setInterval(() => setShowCursor((v) => !v), 530);
+    const id = setInterval(() => setCursor((v) => !v), 540);
     return () => clearInterval(id);
   }, []);
 
-  /* Typewriter tick */
   useEffect(() => {
     if (paused) {
       const id = setTimeout(() => {
-        setVisibleLines([{ text: "", color: CODE_LINES[0].color }]);
+        setLines([{ chars: "", color: CODE_LINES[0].color }]);
         setLineIdx(0);
         setCharIdx(0);
         setPaused(false);
-      }, 2200);
+      }, 2400);
       return () => clearTimeout(id);
     }
-
-    const currentLine = CODE_LINES[lineIdx];
-    if (!currentLine) return;
-
-    if (charIdx < currentLine.text.length) {
-      const id = setTimeout(() => setCharIdx((c) => c + 1), 28);
+    const current = CODE_LINES[lineIdx];
+    if (!current) return;
+    if (charIdx < current.text.length) {
+      const id = setTimeout(() => setCharIdx((c) => c + 1), 24);
       return () => clearTimeout(id);
     }
-
-    /* Line complete */
-    const nextIdx = lineIdx + 1;
-    if (nextIdx >= CODE_LINES.length) {
-      const id = setTimeout(() => setPaused(true), 1000);
+    const next = lineIdx + 1;
+    if (next >= CODE_LINES.length) {
+      const id = setTimeout(() => setPaused(true), 1200);
       return () => clearTimeout(id);
     }
-
     const id = setTimeout(() => {
-      setVisibleLines((prev) => {
-        const updated = [...prev];
-        updated[lineIdx] = { text: currentLine.text, color: currentLine.color };
-        return [...updated, { text: "", color: CODE_LINES[nextIdx].color }];
+      setLines((prev) => {
+        const upd = [...prev];
+        upd[lineIdx] = { chars: current.text, color: current.color };
+        return [...upd, { chars: "", color: CODE_LINES[next].color }];
       });
-      setLineIdx(nextIdx);
+      setLineIdx(next);
       setCharIdx(0);
-    }, 55);
+    }, 50);
     return () => clearTimeout(id);
   }, [lineIdx, charIdx, paused]);
 
   useEffect(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollTop = containerRef.current.scrollHeight;
-    }
-  }, [visibleLines]);
+    if (bodyRef.current)
+      bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
+  }, [lines]);
 
-  const displayLines = visibleLines.map((line, i) => ({
-    ...line,
-    text:
+  const display = lines.map((l, i) => ({
+    ...l,
+    chars:
       i === lineIdx
         ? (CODE_LINES[lineIdx]?.text.slice(0, charIdx) ?? "")
-        : line.text,
+        : l.chars,
   }));
 
   return (
     <div
       className="terminal"
       role="img"
-      aria-label="Code snippet demonstrating Winfred's work"
+      aria-label="Code sample from Winfred's projects"
     >
-      {/* Window chrome */}
       <div className="terminal__bar">
-        <span className="terminal__dot terminal__dot--red" aria-hidden="true" />
-        <span
-          className="terminal__dot terminal__dot--amber"
-          aria-hidden="true"
-        />
-        <span
-          className="terminal__dot terminal__dot--green"
-          aria-hidden="true"
-        />
-        <span className="terminal__filename">portfolio.rb</span>
+        <span className="terminal__dot" style={{ background: "#FF5F56" }} />
+        <span className="terminal__dot" style={{ background: "#FFBD2E" }} />
+        <span className="terminal__dot" style={{ background: "#27C93F" }} />
+        <span className="terminal__file">services/mpesa_payment.rb</span>
       </div>
-
-      {/* Line numbers + code */}
-      <div className="terminal__body" ref={containerRef}>
+      <div className="terminal__body" ref={bodyRef}>
         <div className="terminal__gutter" aria-hidden="true">
-          {displayLines.map((_, i) => (
-            <span key={i} className="terminal__lineno">
-              {i + 1}
-            </span>
+          {display.map((_, i) => (
+            <span key={i}>{i + 1}</span>
           ))}
         </div>
         <pre className="terminal__code">
-          {displayLines.map((line, i) => (
+          {display.map((line, i) => (
             <div key={i} className="terminal__line">
               <span style={{ color: line.color || "transparent" }}>
-                {line.text || "\u00A0"}
+                {line.chars || "\u00A0"}
               </span>
               {i === lineIdx && (
                 <span
-                  className={`terminal__cursor${showCursor ? "" : " terminal__cursor--hidden"}`}
-                  aria-hidden="true"
+                  className={`terminal__cursor${cursor ? "" : " terminal__cursor--off"}`}
                 />
               )}
             </div>
@@ -146,13 +131,14 @@ export default function Hero() {
 
   return (
     <section id="hero" className="hero" aria-label="Introduction">
-      <div className="hero__rule" aria-hidden="true" />
+      <div className="hero__grid-bg" aria-hidden="true" />
 
       <div className="container hero__grid">
+        {/* Left */}
         <div className="hero__left">
           <div className="hero__tag">
             <span className="hero__tag-dot" aria-hidden="true" />
-            Available for work
+            Available &nbsp;·&nbsp; Nairobi, Kenya
           </div>
 
           <h1 className="hero__name">
@@ -161,25 +147,26 @@ export default function Hero() {
             <em>Edube</em>
           </h1>
 
-          <p className="hero__title">
-            Full-Stack Developer&nbsp;·&nbsp;React &amp; Ruby on Rails
+          <p className="hero__statement">
+            Building production web applications
+            <br />
+            with React and Ruby on Rails.
           </p>
 
-          <p className="hero__value-prop">
-            I build web applications that work in the real world — clean
-            architecture, reliable data flow, and interfaces people can actually
-            use.
+          <p className="hero__sub">
+            Full-stack engineer focused on clean architecture, reliable data
+            flow, and software that solves real business problems.
           </p>
 
           <div className="hero__ctas">
             <button
-              className="btn btn--primary"
+              className="btn btn--primary btn--lg"
               onClick={() => scrollTo("#projects")}
             >
               View My Work
               <svg
-                width="14"
-                height="14"
+                width="16"
+                height="16"
                 viewBox="0 0 16 16"
                 fill="none"
                 aria-hidden="true"
@@ -187,14 +174,14 @@ export default function Hero() {
                 <path
                   d="M3 8h10M9 4l4 4-4 4"
                   stroke="currentColor"
-                  strokeWidth="2"
+                  strokeWidth="1.75"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
               </svg>
             </button>
             <button
-              className="btn btn--outline-light"
+              className="btn btn--ghost btn--lg"
               onClick={() => scrollTo("#contact")}
             >
               Get In Touch
@@ -202,13 +189,12 @@ export default function Hero() {
           </div>
 
           <div className="hero__social">
-            {/* REPLACE: Update href values with your actual GitHub and LinkedIn URLs */}
             <a
-              href="https://github.com/GITHUB_URL"
+              href="https://github.com/edubew"
               target="_blank"
               rel="noopener noreferrer"
               className="hero__social-link"
-              aria-label="GitHub profile"
+              aria-label="GitHub"
             >
               <svg
                 width="18"
@@ -221,13 +207,13 @@ export default function Hero() {
               </svg>
               GitHub
             </a>
-            <span className="hero__social-divider" aria-hidden="true" />
+            <span className="hero__divider" aria-hidden="true" />
             <a
-              href="https://linkedin.com/in/LINKEDIN_URL"
+              href="https://www.linkedin.com/in/winfred-edube/"
               target="_blank"
               rel="noopener noreferrer"
               className="hero__social-link"
-              aria-label="LinkedIn profile"
+              aria-label="LinkedIn"
             >
               <svg
                 width="17"
@@ -244,17 +230,33 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Terminal panel */}
         <div className="hero__right" aria-hidden="true">
           <Typewriter />
         </div>
       </div>
 
-      {/* Scroll hint */}
-      <div className="hero__scroll" aria-hidden="true">
-        <div className="hero__scroll-line" />
-        <span>Scroll</span>
-      </div>
+      <button
+        className="hero__scroll-cta"
+        onClick={() => scrollTo("#projects")}
+        aria-label="Jump to selected work"
+      >
+        Selected Work
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M12 5v14M5 12l7 7 7-7"
+            stroke="currentColor"
+            strokeWidth="1.75"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
     </section>
   );
 }

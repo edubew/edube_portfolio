@@ -1,0 +1,153 @@
+.contact {
+  background: var(--dark);
+  padding: var(--section-pad) 0;
+}
+
+.contact__header {
+  max-width: 640px;
+  margin-bottom: 60px;
+}
+
+.contact__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  max-width: 860px;
+}
+
+.contact-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 28px 28px 28px 24px;
+  background: rgba(70, 74, 82, 0.25);
+  border: 1px solid var(--dark-border);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  color: inherit;
+  transition: background var(--transition), border-color var(--transition),
+    transform var(--transition), box-shadow var(--transition);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(122, 143, 123, 0.08) 0%,
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.contact-card:hover {
+  background: rgba(122, 143, 123, 0.1);
+  border-color: rgba(122, 143, 123, 0.35);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.contact-card:hover::before {
+  opacity: 1;
+}
+
+.contact-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border: 1px solid var(--dark-border);
+  border-radius: var(--radius-sm);
+  color: var(--sage-light);
+  background: rgba(122, 143, 123, 0.08);
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+.contact-card:hover .contact-card__icon {
+  background: rgba(122, 143, 123, 0.2);
+  border-color: rgba(122, 143, 123, 0.3);
+  color: var(--sage-light);
+}
+
+.contact-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.contact-card__platform {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sage);
+}
+
+.contact-card__handle {
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--off-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.8;
+}
+
+.contact-card__cta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(242, 244, 239, 0.3);
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: color var(--transition);
+}
+
+.contact-card:hover .contact-card__cta {
+  color: var(--sage-light);
+}
+
+.contact__note {
+  margin-top: 40px;
+  font-size: 0.85rem;
+  color: aliceblue;
+  /* color: rgba(242, 244, 239, 0.28); */
+  max-width: 480px;
+  line-height: 1.7;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .contact__grid {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-card {
+    padding: 20px 18px;
+    gap: 14px;
+  }
+  .contact-card__icon {
+    width: 46px;
+    height: 46px;
+  }
+  .contact-card__cta {
+    display: none;
+  }
+  .contact-card__handle {
+    font-size: 0.85rem;
+  }
+}

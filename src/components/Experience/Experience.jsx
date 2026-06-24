@@ -1,145 +1,76 @@
 import React from "react";
 import "./Experience.css";
 
-const EXPERIENCE = [
+const ENTRIES = [
   {
-    id: 1,
+    period: "2023 – Present",
     role: "Freelance Full-Stack Developer",
     org: "Independent",
-    period: "START_DATE – Present",
-    // REPLACE: Update START_DATE with the actual start date, e.g. "Jan 2024 – Present"
-    description:
-      "Built and shipped multiple production React/Rails applications independently — architecture, development, deployment, and post-launch support.",
-    type: "current",
+    current: true,
+    desc: "Built and shipped multiple production React/Rails applications independently — owning architecture, development, deployment, and post-launch support across every project.",
+    tags: ["React", "Ruby on Rails", "PostgreSQL", "M-Pesa"],
   },
   {
-    id: 2,
+    period: "Mar 2025 – Sep 2025",
     role: "Customer Care & Operations Officer",
     org: "Glam Decor",
-    period: "Mar 2025 – Sep 2025",
-    description:
-      "Worked directly with non-technical clients, translating needs into clear requirements — a skill directly applied to client-facing development work.",
-    type: "work",
+    current: false,
+    desc: "Worked directly with non-technical clients, translating business needs into clear system requirements — a skill that directly informs client-facing development work.",
+    tags: ["Client Communication", "Requirements Analysis", "Operations"],
   },
   {
-    id: 3,
+    period: "Dec 2022 – Sep 2023",
     role: "Volunteer Mentor",
     org: "Microverse Inc.",
-    period: "Dec 2022 – Sep 2023",
-    description:
-      "Reviewed peer code and provided structured feedback on architecture and best practices as part of Microverse's peer-mentorship program.",
-    type: "volunteer",
+    current: false,
+    desc: "Reviewed peer code and delivered structured feedback on architecture, patterns, and best practices as part of Microverse's peer-mentorship program.",
+    tags: ["Code Review", "Mentorship", "Pair Programming"],
   },
 ];
 
-const TYPE_ICONS = {
-  current: (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"
-        stroke="currentColor"
-        strokeWidth="2"
-      />
-      <path
-        d="M12 6v6l4 2"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  ),
-  work: (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden="true"
-    >
-      <rect
-        x="2"
-        y="7"
-        width="20"
-        height="14"
-        rx="2"
-        stroke="currentColor"
-        strokeWidth="2"
-      />
-      <path
-        d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"
-        stroke="currentColor"
-        strokeWidth="2"
-      />
-    </svg>
-  ),
-  volunteer: (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="2" />
-      <path
-        d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  ),
-};
-
 export default function Experience() {
   return (
-    <section id="experience" className="section experience">
+    <section
+      id="experience"
+      className="experience section--light"
+      aria-labelledby="exp-title"
+    >
       <div className="container">
-        <div className="experience__header">
-          <p className="section-label reveal">Experience</p>
-          <h2 className="section-title reveal reveal-delay-1">
+        <div className="experience__header reveal">
+          <span className="section-label">Experience</span>
+          <h2 className="section-title" id="exp-title">
             Where I've worked
           </h2>
         </div>
 
-        <div className="timeline" role="list">
-          {EXPERIENCE.map((entry, i) => (
-            <div
-              key={entry.id}
-              className={`timeline__entry timeline__entry--${i % 2 === 0 ? "left" : "right"} reveal${i > 0 ? ` reveal-delay-${i}` : ""}`}
-              role="listitem"
-            >
-              <div className="timeline__node" aria-hidden="true">
-                {TYPE_ICONS[entry.type]}
+        <div className="exp-list">
+          {ENTRIES.map((entry, i) => (
+            <div key={i} className={`exp-entry reveal reveal-delay-${i + 1}`}>
+              <div className="exp-entry__left">
+                <span className="exp-entry__period">{entry.period}</span>
+                {entry.current && (
+                  <span className="exp-entry__badge">Current</span>
+                )}
               </div>
 
-              <div className="timeline__card">
-                <div className="timeline__meta">
-                  <span className="timeline__period">{entry.period}</span>
-                  {entry.type === "current" && (
-                    <span className="timeline__badge">Current</span>
-                  )}
+              <div className="exp-entry__line" aria-hidden="true">
+                <div className="exp-entry__node" />
+              </div>
+
+              <div className="exp-entry__right">
+                <h3 className="exp-entry__role">{entry.role}</h3>
+                <p className="exp-entry__org">{entry.org}</p>
+                <p className="exp-entry__desc">{entry.desc}</p>
+                <div className="exp-entry__tags">
+                  {entry.tags.map((t) => (
+                    <span key={t} className="exp-entry__tag">
+                      {t}
+                    </span>
+                  ))}
                 </div>
-                <h3 className="timeline__role">{entry.role}</h3>
-                <p className="timeline__org">{entry.org}</p>
-                <p className="timeline__desc">{entry.description}</p>
               </div>
             </div>
           ))}
-
-          <div className="timeline__line" aria-hidden="true" />
         </div>
       </div>
     </section>
